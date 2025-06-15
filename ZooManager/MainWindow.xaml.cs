@@ -12,7 +12,7 @@ namespace ZooManager
     /// </summary>
     public partial class MainWindow : Window
     {
-        SqlConnection sqlConnectiton;
+        SqlConnection sqlConnection;
 
         public MainWindow()
         {
@@ -20,9 +20,10 @@ namespace ZooManager
 
             string connectionString = ConfigurationManager.ConnectionStrings["ZooManager.Properties.Settings.AcideraDBConnectionString"].ConnectionString;
             
-            sqlConnectiton = new SqlConnection(connectionString);
+            sqlConnection = new SqlConnection(connectionString);
 
             ShowZoos();
+            ShowAnimals();
 
         }
 
@@ -33,7 +34,7 @@ namespace ZooManager
 
                 string query = "SELECT * FROM Zoo";
 
-                SqlDataAdapter adapter = new SqlDataAdapter(query, sqlConnectiton);
+                SqlDataAdapter adapter = new SqlDataAdapter(query, sqlConnection);
 
                 using (adapter)
                 {
@@ -59,7 +60,7 @@ namespace ZooManager
 
                 string query = "SELECT * FROM Animal a INNER JOIN ZooAnimal za ON a.Id = za.AnimalId where za.ZooId = @ZooId ";
 
-                SqlCommand sqlCommand = new SqlCommand(query, sqlConnectiton);
+                SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
 
                 SqlDataAdapter adapter = new SqlDataAdapter(sqlCommand);
 
@@ -85,6 +86,78 @@ namespace ZooManager
         private void listZoos_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
            ShowAnimalList();
+        }
+
+        private void ShowAnimals()
+        {
+            try
+            {
+                string query = "SELECT * FROM Animal";
+
+                SqlDataAdapter sqlAdapter = new SqlDataAdapter(query, sqlConnection);
+
+                using (sqlAdapter)
+                {
+                    DataTable allAnimals = new DataTable();
+
+                    sqlAdapter.Fill(allAnimals);
+
+                    listAllAnimals.DisplayMemberPath="Name";
+                    listAllAnimals.SelectedValuePath="Id";
+                    listAllAnimals.ItemsSource=allAnimals.DefaultView;
+                }
+
+            }catch (Exception e)
+            {
+                //Console.WriteLine(e.Message); 
+            }
+        }
+        
+
+        private void DeleteZoo_Click(object sender, RoutedEventArgs e)
+        {
+
+            try
+            {
+                string query = "DELETE FROM Zoo WHERE Id = @ZooId";
+                SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
+                sqlConnection.Open();
+                sqlCommand.Parameters.AddWithValue("@ZooId", listZoos.SelectedValue);
+                sqlCommand.ExecuteScalar();
+
+            }
+            catch(Exception ex)  
+            {
+                MessageBox.Show(ex.ToString());
+            }
+            finally
+            {
+                sqlConnection.Close();
+                ShowZoos();
+            }
+        }
+
+        private void AddZoo_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string query = "INSERT INTO Zoo VALUES (@ZooName)";
+                SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
+                sqlConnection.Open();
+                sqlCommand.Parameters.AddWithValue("@ZooName", InputEntry.Text);
+                sqlCommand.ExecuteScalar();
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+            finally
+            {
+                sqlConnection.Close();
+                ShowZoos();
+            }
+
         }
     }
 }
