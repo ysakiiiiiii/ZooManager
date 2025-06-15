@@ -26,6 +26,71 @@ namespace ZooManager
             ShowAnimals();
 
         }
+        private void listZoos_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ShowAnimalList();
+            ShowSelectedZooInTextBox();
+        }
+
+        private void listAllAnimals_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ShowSelectedAnimalInTextBox();
+        }
+
+
+        private void ShowSelectedZooInTextBox()
+        {
+            try
+            {
+
+                string query = "SELECT Location FROM Zoo WHERE Id = @ZooId";
+
+                SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
+
+                SqlDataAdapter adapter = new SqlDataAdapter(sqlCommand);
+
+                using (adapter)
+                {
+                    sqlCommand.Parameters.AddWithValue("@ZooId", listZoos.SelectedValue);
+                    DataTable zooDataTable = new DataTable();
+                    adapter.Fill(zooDataTable);
+
+                    InputEntry.Text = zooDataTable.Rows[0]["Location"].ToString();
+
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+
+        private void ShowSelectedAnimalInTextBox()
+        {
+            try
+            {
+
+                string query = "SELECT Name FROM Animal WHERE Id = @AnimalId";
+
+                SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
+
+                SqlDataAdapter adapter = new SqlDataAdapter(sqlCommand);
+
+                using (adapter)
+                {
+                    sqlCommand.Parameters.AddWithValue("@AnimalId", listAllAnimals.SelectedValue);
+                    DataTable zooDataTable = new DataTable();
+                    adapter.Fill(zooDataTable);
+
+                    InputEntry.Text = zooDataTable.Rows[0]["Name"].ToString();
+
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
 
         private void ShowZoos()
         {
@@ -83,10 +148,6 @@ namespace ZooManager
         }
 
 
-        private void listZoos_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-           ShowAnimalList();
-        }
 
         private void ShowAnimals()
         {
@@ -256,5 +317,56 @@ namespace ZooManager
             }
 
         }
+
+        private void UpdateZoo_Click(object sender, RoutedEventArgs e)
+        {
+
+            try
+            {
+                string query = "UPDATE ZOO SET Location = @Location WHERE Id = @ZooId";
+                SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
+                sqlConnection.Open();
+                sqlCommand.Parameters.AddWithValue("@ZooId", listZoos.SelectedValue);
+                sqlCommand.Parameters.AddWithValue("@Location", InputEntry.Text);
+
+                sqlCommand.ExecuteScalar();
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+            finally
+            {
+                sqlConnection.Close();
+                ShowZoos();
+            }
+        }
+
+        private void UpdateAnimal_Click(object sender, RoutedEventArgs e)
+        {
+
+            try
+            {
+                string query = "UPDATE Animal SET Name = @Name WHERE Id = @AnimalId";
+                SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
+                sqlConnection.Open();
+                sqlCommand.Parameters.AddWithValue("@AnimalId", listAllAnimals.SelectedValue);
+                sqlCommand.Parameters.AddWithValue("@Name", InputEntry.Text);
+
+                sqlCommand.ExecuteScalar();
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+            finally
+            {
+                sqlConnection.Close();
+                ShowAnimals();
+            }
+        }
+
     }
 }
