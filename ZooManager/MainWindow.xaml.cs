@@ -1,19 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Configuration;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Configuration;
+using System.Data.SqlClient;
+using System.Data;
 
 namespace ZooManager
 {
@@ -22,11 +10,39 @@ namespace ZooManager
     /// </summary>
     public partial class MainWindow : Window
     {
+        SqlConnection sqlConnectiton;
+
         public MainWindow()
         {
             InitializeComponent();
 
-            string connectionString = ConfigurationManager.ConnectionStrings["ZooManager.Properties.Settingss.AcideraDBConnectionString"].ConnectionString;
+            string connectionString = ConfigurationManager.ConnectionStrings["ZooManager.Properties.Settings.AcideraDBConnectionString"].ConnectionString;
+            
+            sqlConnectiton = new SqlConnection(connectionString);
+
+            ShowZoos();
+
         }
+
+        private void ShowZoos()
+        {
+            string query = "SELECT * FROM Zoo";
+
+            SqlDataAdapter adapter = new SqlDataAdapter(query, sqlConnectiton);
+
+            using (adapter)
+            {
+                DataTable zooTable = new DataTable();
+                adapter.Fill(zooTable);
+
+                listZoos.DisplayMemberPath = "Location";
+                listZoos.SelectedValuePath = "Id";
+                listZoos.ItemsSource = zooTable.DefaultView;
+
+            }
+
+
+        }
+
     }
 }

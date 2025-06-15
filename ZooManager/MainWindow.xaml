@@ -5,8 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ZooManager"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="500" Width="750">
     <Grid>
-        
+        <Label Content="Zoo List" HorizontalAlignment="Left" Margin="34,38,0,0" VerticalAlignment="Top"/>
+        <ListBox x:Name="listZoos" Margin="34,69,550,205"/>
+
     </Grid>
 </Window>
