@@ -1,0 +1,66 @@
+﻿	# Build results
+bin/
+obj/
+[Bb]uild/
+[Ll]og/
+*.log
+
+# VS generated files
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# VS Code settings
+.vscode/
+
+# NuGet Packages
+*.nupkg
+*.snupkg
+packages/
+*.nuspec
+
+# Rider IDE
+.idea/
+
+# DotCover
+*.dotCover
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Web resource output
+wwwroot/
+
+# Other temporary files
+*.tmp
+*.temp
+*.bak
+*.old
+*.orig
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Publish folder
+publish/
+
+# Resharper files
+_ReSharper*/
+*.ReSharper
+*.DotSettings.user
+
+# Test results
+TestResults/
+
+# JetBrains Rider
+.idea/
+
+# Entity Framework Migrations
+Migrations/
+
+# Optional: ignore compiled DLLs/exes
+*.dll
+*.exe
